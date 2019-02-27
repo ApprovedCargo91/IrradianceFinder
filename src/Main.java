@@ -5,6 +5,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,48 +15,71 @@ public class Main {
     private static HttpsURLConnection con;
     private static Map<String, String> parameters = new HashMap<>();
     private static DataOutputStream out;
+    private static StringBuffer content;
+    private static int zip = 30332;
+    private static ArrayList<Integer> cloudCover = new ArrayList<>();
+    private static ArrayList<String> times = new ArrayList<>();
 
     public static void main(String[] args) {
         try {
-            url = new URL("https://api.openweathermap.org/data/2.5/forecast");
+            url = new URL("https://api.openweathermap.org/data/2.5/forecast?APPID=5b1eae5aa03d118038e19b8a1b2e61ac&zip="+zip);
+            System.out.println("URL set!");
+
 //        } catch (MalformedURLException e) {
 //            System.out.println("Error: The URL is malformed.");
 //        }
 //        try {
             con = (HttpsURLConnection) url.openConnection();
+            System.out.println("Connection opened!");
 //        } catch (IOException e) {
 //            System.out.println("Error: A connection could not be opened.");
 //        }
 //        try {
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setConnectTimeout(10000);
+            con.setReadTimeout(10000);
             con.setRequestMethod("GET");
 //        } catch (ProtocolException e) {
 //            System.out.println("Error: The request method is invalid.");
 //        }
-            parameters.put("zip", "30332");
-            parameters.put("appid", "5b1eae5aa03d118038e19b8a1b2e61ac");
+//            parameters.put("zip", "30332");
+//            parameters.put("APPID", "5b1eae5aa03d118038e19b8a1b2e61ac");
 
-            con.setDoOutput(true);
+//            con.setDoOutput(true);
 //        try {
-            out = new DataOutputStream(con.getOutputStream());
+//            out = new DataOutputStream(con.getOutputStream());
 //        } catch (IOException e) {
 //            System.out.println("Error: The output stream does not exist.");
 //        }
-            out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
-            out.flush();
-            out.close();
+//            out.writeBytes(ParameterStringBuilder.getParamsString(parameters));
+//            out.flush();
+//            out.close();
         } catch (Exception e) {
             System.out.println("Error: Connection configuration is incorrect.");
         }
-        con.setRequestProperty("Content-Type", "application/json");
-        con.setConnectTimeout(5000);
-        con.setReadTimeout(5000);
         try {
             int status = con.getResponseCode();
+            System.out.println(status);
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            ///* continue from here *///
+            String inputLine;
+            content = new StringBuffer();
+            while((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+                int index = inputLine.indexOf("clouds");
+                if(inputLine.contains("clouds")) {
+                    System.out.println(inputLine);
+                    inputLine = in.readLine();
+                    System.out.println(inputLine);
+                    cloudCover.add(Integer.parseInt(inputLine.substring(7)));
+                }
+            }
+            in.close();
+            con.disconnect();
         } catch (Exception e) {
             System.out.println("Error: Connection could not be made.");
         }
+        System.out.println(content);
+        System.out.println(cloudCover);
     }
 
     private static class ParameterStringBuilder {
