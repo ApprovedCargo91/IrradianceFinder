@@ -1,21 +1,12 @@
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Main {
 
     private static URL url;
     private static HttpsURLConnection con;
-    private static Map<String, String> parameters = new HashMap<>();
-    private static DataOutputStream out;
-    private static StringBuffer content;
     private static int zip = 30332;
     private static ArrayList<Integer> cloudCover = new ArrayList<>();
     private static ArrayList<String> times = new ArrayList<>();
@@ -60,7 +51,7 @@ public class Main {
         }
         try {
             int status = con.getResponseCode();
-            System.out.println("HTTP Code: " + status);
+            System.out.println("HTTP Status Code: " + status);
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine = in.readLine();
 //            content = new StringBuffer();
