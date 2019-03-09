@@ -100,9 +100,9 @@ public class Main {
             for(int i = 0; i < lat.size() / remFactor; i++) {
                 if (i == 0 || i == lat.size() / remFactor || !Arrays.equals(lastAppended, cloudCover[i])) {
                     lastAppended = cloudCover[i];
-                    sb.append(lat.get(i));
+                    sb.append(lat.get(i * remFactor));
                     sb.append(',');
-                    sb.append(lon.get(i));
+                    sb.append(lon.get(i * remFactor));
                     sb.append(',');
                     for(int cc:cloudCover[i]) {
                         sb.append(cc);
